@@ -4,6 +4,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.ITestResult;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.WebDriver;
 import java.time.Duration;
 import org.testng.annotations.Test;
@@ -24,7 +26,10 @@ public class TestLogin {
             System.setProperty("webdriver.chrome.driver", "/usr/local/share/chrome_driver/chromedriver");
         }
         System.out.println("Starting web driver");
-        driver = new ChromeDriver();
+        ChromeOptions chromeOptions = new ChromeOptions();
+        chromeOptions.addArguments("--ignore-certificate-errors");
+        chromeOptions.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
+        driver = new ChromeDriver(chromeOptions);
         PageObjectsLogin = new login(driver);
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
