@@ -28,7 +28,7 @@ jobs:
       - name: Install Dependencies
         shell: bash
         run: |
-          mvn install
+          mvn -DskipTests=true install
 
   integration-e2e-test:
     runs-on: ubuntu-latest
