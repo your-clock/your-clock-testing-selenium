@@ -21,7 +21,7 @@ public class TestLogin {
         if(System.getProperty("os.name").equals("Mac OS X")){
             System.setProperty("webdriver.chrome.driver", "./src/main/resources/drivers/chromedriver");
         }else{
-            System.setProperty("webdriver.chrome.driver", "/usr/local/share/chrome_driver");
+            System.setProperty("webdriver.chrome.driver", "/usr/local/share/chrome_driver/chromedriver");
         }
         System.out.println("Starting web driver");
         driver = new ChromeDriver();
