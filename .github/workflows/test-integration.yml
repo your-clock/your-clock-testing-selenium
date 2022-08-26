@@ -1,0 +1,55 @@
+name: automated-testing-integration
+
+on:
+  push:
+    branches:
+      - staging
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup environment
+        uses: actions/setup-java@v2
+        with:
+          java-version: "11"
+          architecture: x64
+          distribution: "adopt"
+      - name: Restore cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Install Dependencies
+        shell: bash
+        run: |
+          mvn -DskipTests=true install
+
+  integration-e2e-test:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    steps:
+      - uses: actions/checkout@v2
+      - name: Restore cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Run testing
+        shell: bash
+        run: |
+          mvn test -PPipeline
+      - name: Upload reports
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: reports
+          retention-days: 7
+          path: |
+            target/surefire-reports/emailable-report.html

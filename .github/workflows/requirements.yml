@@ -1,0 +1,48 @@
+name: requirements-project
+
+on:
+  pull_request:
+    branches:
+      - staging
+      - master
+
+env:
+  language: "java" #Si su lenguaje no es java, cambie el valor: javascript, java, python
+
+jobs:
+  security-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Checking LabActions
+        uses: actions/checkout@v2
+        with:
+          repository: bancodebogota/bdb-dig-do-pipelines-action-securitycheck
+          ref: ''
+          token: ${{ secrets.DIG_READER_GITHUB_ACCESS_TOKEN }}
+          persist-credentials: false
+          path: ./.github/actions/bdb-dig-do-pipelines-action-securitycheck
+      - name: Security-Checks
+        uses: ./.github/actions/bdb-dig-do-pipelines-action-securitycheck
+
+  sonar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Checking Sonar Action
+        uses: actions/checkout@v2
+        with:
+          repository: bancodebogota/bdb-dig-do-pipelines-actions
+          ref: ""
+          token: ${{ secrets.DIG_READER_GITHUB_ACCESS_TOKEN }}
+          persist-credentials: false
+          path: ./.github/actions/bdb-dig-do-pipelines-actions
+      - name: SonarCloud Scanner
+        uses: ./.github/actions/bdb-dig-do-pipelines-actions/sonarcloud
+        with:
+          language: ${{ env.language }}
+          current-branch: ${{ github.event.pull_request.base.ref }}
+          access-token: ${{ secrets.SONAR_CLOUD_TOKEN }}
+          project-name: ${{ github.event.repository.name }}
+          project-key: ${{ github.event.repository.name }}
+          sonar-project-properties-file: "sonar-project-custom.properties"
