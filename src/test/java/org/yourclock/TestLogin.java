@@ -17,7 +17,13 @@ public class TestLogin {
     @BeforeMethod
     public void beforeMethod() {
         System.out.println("Starting test case");
-        System.setProperty("webdriver.chrome.driver", "./src/main/resources/drivers/chromedriver");
+        System.out.println("System to use: " + System.getProperty("os.name"));
+        if(System.getProperty("os.name").equals("Mac OS X")){
+            System.setProperty("webdriver.chrome.driver", "./src/main/resources/drivers/chromedriver");
+        }else{
+            System.setProperty("webdriver.chrome.driver", "/usr/local/share/chrome_driver");
+        }
+        System.out.println("Starting web driver");
         driver = new ChromeDriver();
         PageObjectsLogin = new login(driver);
         driver.manage().window().maximize();

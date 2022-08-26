@@ -45,7 +45,7 @@ jobs:
       - name: Run testing
         shell: bash
         run: |
-          chmod u+x ./src/main/resources/update-driver.sh && bash ./src/main/resources/update-driver.sh
+          chmod u+x ./src/main/resources/update-driver.sh && sh ./src/main/resources/update-driver.sh
           mvn test -PPipeline
       - name: Upload reports
         if: ${{ always() }}
